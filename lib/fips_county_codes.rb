@@ -1,33 +1,77 @@
+require 'csv'
+
 module FipsCountyCodes
-  fips = {}
-  state_county = {}
 
-  LIB_DIRECTORY = File.expand_path(File.dirname(__FILE__))
-  FIPS_CODES_CSV_FILE = File.join(LIB_DIRECTORY, 'national.txt')
+  FIPS = {}
+  STATE_COUNTY = {}
 
-  File.open(FIPS_CODES_CSV_FILE) do |f|
-    f.readline # skip the first line with headers
+  class FipsCode
+    attr_reader :state, :county
 
-    until f.eof
-      row = f.readline.chomp.split(',')
-      state, state_code, county_code, county, class_code_ignored = row
+    def initialize(state, county)
+      @state = state
+      @county = county
+    end
 
-      if not fips.member?(state)
-        fips[state] = {}
-        state_county["#{state_code}000"] = [state, "All Counties"].freeze
-      end
-
-      fips_code = "#{state_code}#{county_code}"
-      fips[state][county] = fips_code
-
-      county2 = county.gsub(' County', '')
-      fips[state][county2] = fips_code if county != county2
-
-      state_county[fips_code] = [state, county].freeze
+    def to_a
+      [state, county].freeze
     end
   end
 
-  FIPS = fips.freeze
-  STATE_COUNTY = state_county.freeze
-end
+  class FipsState
+    attr_reader :fips
 
+    def initialize(fips)
+      @fips = fips
+      @counties = {}
+    end
+
+    def []=(county_name, fips)
+      @counties[county_name] = fips
+    end
+
+    def county(county_name)
+      @counties[county_name]
+    end
+
+    def counties
+      @counties.dup
+    end
+
+  end
+
+  def self.fips(county_code)
+    return STATE_COUNTY[county_code] if STATE_COUNTY.has_key? county_code
+    FipsCode.new("", "")
+  end
+
+  def self.state(state)
+    return FIPS[state] if FIPS.has_key? state
+    FipsState.new("")
+  end
+
+  def self.load_fips_data
+    data = CSV.read(File.join(File.expand_path(File.dirname(__FILE__)), 'national.txt'))
+    data.shift
+
+    data.each do |row|
+      state, state_code, county_code, county, class_code_ignored = row.to_a
+      long_state_code = "#{state_code}000"
+      fips_code = "#{state_code}#{county_code}"
+
+      unless FIPS.has_key? state
+        FIPS[state] = FipsState.new(long_state_code)
+        STATE_COUNTY[long_state_code] = FipsCode.new(state, "All Counties")
+      end
+
+      FIPS[state][county] = fips_code
+      county2 = county.gsub(' County', '')
+      FIPS[state][county2] = fips_code if county != county2
+      STATE_COUNTY[fips_code] = FipsCode.new(state, county)
+    end
+    FIPS.freeze
+    STATE_COUNTY.freeze
+  end
+
+  self.load_fips_data
+end
