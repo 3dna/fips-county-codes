@@ -12,7 +12,10 @@ module FipsCountyCodes
       row = f.readline.chomp.split(',')
       state, state_code, county_code, county, class_code_ignored = row
 
-      fips[state] = {} if not fips.member?(state)
+      if not fips.member?(state)
+        fips[state] = {}
+        state_county["#{state_code}000"] = [state, "All Counties"]
+      end
 
       fips_code = "#{state_code}#{county_code}"
       fips[state][county] = fips_code
