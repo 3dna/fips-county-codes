@@ -15,12 +15,12 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "fips-county-codes"
-  gem.homepage = "http://github.com/raypereda/fips-county-codes"
+  gem.homepage = "https://github.com/3dna/fips-county-codes/"
   gem.license = "MIT"
   gem.summary = %Q{data structures for querying FIPS codes}
   #gem.description = %Q{TODO: longer description of your gem}
-  gem.email = "ray@nationbuilder.com"
-  gem.authors = ["Ray Pereda"]
+  gem.email = "hembree@nationbuilder.com"
+  gem.authors = ["hembree"]
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
