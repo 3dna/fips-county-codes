@@ -1,44 +1,11 @@
 require 'csv'
+require_relative 'fips_code'
+require_relative 'fips_state'
 
 module FipsCountyCodes
 
   FIPS = {}
   STATE_COUNTY = {}
-
-  class FipsCode
-    attr_reader :state, :county
-
-    def initialize(state, county)
-      @state = state
-      @county = county
-    end
-
-    def to_a
-      [state, county].freeze
-    end
-  end
-
-  class FipsState
-    attr_reader :fips
-
-    def initialize(fips)
-      @fips = fips
-      @counties = {}
-    end
-
-    def []=(county_name, fips)
-      @counties[county_name] = fips
-    end
-
-    def county(county_name)
-      @counties[county_name]
-    end
-
-    def counties
-      @counties.dup
-    end
-
-  end
 
   def self.fips(county_code)
     return STATE_COUNTY[county_code] if STATE_COUNTY.has_key? county_code
@@ -47,7 +14,11 @@ module FipsCountyCodes
 
   def self.state(state)
     return FIPS[state] if FIPS.has_key? state
-    FipsState.new("")
+    FipsState.new("", "")
+  end
+
+  def self.as_list
+    @@as_list ||= FIPS.values.map{|state| state.as_list}.flatten
   end
 
   def self.load_fips_data
@@ -60,7 +31,7 @@ module FipsCountyCodes
       fips_code = "#{state_code}#{county_code}"
 
       unless FIPS.has_key? state
-        FIPS[state] = FipsState.new(long_state_code)
+        FIPS[state] = FipsState.new(long_state_code, state)
         STATE_COUNTY[long_state_code] = FipsCode.new(state, "All Counties")
       end
 
@@ -71,6 +42,7 @@ module FipsCountyCodes
     end
     FIPS.freeze
     STATE_COUNTY.freeze
+    as_list
   end
 
   self.load_fips_data

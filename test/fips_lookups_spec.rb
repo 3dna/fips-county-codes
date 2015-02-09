@@ -6,7 +6,7 @@ describe "Mapping (State, County) between (NISTCodes Code)" do
     FipsCountyCodes.state("CA").county("Los Angeles").should == "06037"
     FipsCountyCodes.state("CA").county("Los Angeles County").should == "06037"
     FipsCountyCodes.state("CA").fips.should == "06000"
-    FipsCountyCodes.state("CA").counties.count.should == 116 # should include 06000 all counties?
+    FipsCountyCodes.state("CA").name.should == "CA"
   end
 
   it "looks up a state and county" do
@@ -33,6 +33,19 @@ describe "Mapping (State, County) between (NISTCodes Code)" do
 
   it "has an entry for each state scoped to all counties" do
     FipsCountyCodes.fips("06000").to_a.should == ["CA", "All Counties"]
+  end
+
+  context "#as_list" do
+
+    it "creates a list of counties" do
+      FipsCountyCodes.state("CA").as_list.count.should eq 116
+      FipsCountyCodes.state("CA").as_list.first.should eq ["CA - Alameda County - 06001", "06001"]
+    end
+
+    it "creates a list of all counties" do
+      FipsCountyCodes.as_list.count.should eq 12484
+    end
+
   end
 
 end
