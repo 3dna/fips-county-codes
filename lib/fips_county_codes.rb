@@ -14,7 +14,7 @@ module FipsCountyCodes
 
       if not fips.member?(state)
         fips[state] = {}
-        state_county["#{state_code}000"] = [state, "All Counties"]
+        state_county["#{state_code}000"] = [state, "All Counties"].freeze
       end
 
       fips_code = "#{state_code}#{county_code}"
@@ -23,7 +23,7 @@ module FipsCountyCodes
       county2 = county.gsub(' County', '')
       fips[state][county2] = fips_code if county != county2
 
-      state_county[fips_code] = [state, county]
+      state_county[fips_code] = [state, county].freeze
     end
   end
 

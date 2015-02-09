@@ -16,8 +16,13 @@ describe 'Mapping (State, County) between (NISTCodes Code)' do
     FipsCountyCodes::STATE_COUNTY.frozen?.should be_true
   end
 
+  it "returns frozen arrays" do
+    FipsCountyCodes::STATE_COUNTY["06037"].should be_frozen
+    FipsCountyCodes::STATE_COUNTY["06000"].should be_frozen
+  end
+
   it "has an entry for each state scoped to all counties" do
-      FipsCountyCodes::STATE_COUNTY["06000"].should == ['CA', 'All Counties']
+    FipsCountyCodes::STATE_COUNTY["06000"].should == ['CA', 'All Counties']
   end
 
 end
