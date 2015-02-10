@@ -18,7 +18,7 @@ module FipsCountyCodes
   end
 
   def self.as_list
-    @@as_list ||= FIPS.values.map{|state| state.as_list}.flatten
+    @@as_list ||= FIPS.values.map{|state| state.as_list}.reduce(:concat)
   end
 
   def self.load_fips_data

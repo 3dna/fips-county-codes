@@ -43,7 +43,7 @@ describe "Mapping (State, County) between (NISTCodes Code)" do
     end
 
     it "creates a list of all counties" do
-      FipsCountyCodes.as_list.count.should eq 12484
+      FipsCountyCodes.as_list.count.should eq 6242
     end
 
   end
