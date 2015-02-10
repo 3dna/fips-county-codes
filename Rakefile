@@ -20,7 +20,7 @@ Jeweler::Tasks.new do |gem|
   gem.summary = %Q{data structures for querying FIPS codes}
   #gem.description = %Q{TODO: longer description of your gem}
   gem.email = "hembree@nationbuilder.com"
-  gem.authors = ["hembree"]
+  gem.authors = ["hembree", "mgbatchelor"]
   # dependencies defined in Gemfile
 end
 Jeweler::RubygemsDotOrgTasks.new
